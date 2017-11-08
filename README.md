@@ -37,7 +37,7 @@ let formData = new FormData();
 formData.append('files[0]', resizer1.blob);
 ```
 
-## Set dataUrl
+## Get dataUrl
 
 ```js
 document.getElementById('image-output').src = resizer2.dataUrl;
