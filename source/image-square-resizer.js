@@ -1,24 +1,27 @@
 // Usage:
-//    let firstArg = 'selectedLogoFile';//<input type="file" id="selectedLogoFile">
-//    let secondArg = 'selectedLogoFileImage';//<img id="selectedLogoFileImage"/>
-//    let thirdArg = 300;//300px size
+//    let firstArg = 'selectedLogoFile';                  //<input type="file" id="selectedLogoFile">
+//    let secondArg = 300;                                //300px
+//    let thirdArg = (dataUrl)=> console.log(dataUrl);    //(dataUrl) => document.getElementById('image-output').src = dataUrl;
+//
 //    this.image = new imageResizer(firstArg, secondArg, thirdArg);
 //
 // When uploaded file:
 //    var formData = new FormData();
-//    formData.append('files[0]', this.image.getBlob());
+//    formData.append('files[0]', this.image.blob);
+//
+//    document.getElementById('image-output').src = this.image.dataUrl;
+
+
 
 
 export default class imageSqResizer {
 
-    constructor(uploaderId, imageId, size) {
-        this.imageId = imageId;
-        this.size = size;
-        this._blob = null;
+    constructor(uploaderId, size, setDataUrlFunc) {
 
-        this.setBlob = this.setBlob.bind(this);
-        this.getBlob = this.getBlob.bind(this);
-        this.resized = this.resized.bind(this);
+        this._setDataUrlFunc = setDataUrlFunc;
+        this._size = size;
+        this._blob = null;
+        this._dataUrl = null;
 
         let upload = document.getElementById(uploaderId);
 
@@ -29,46 +32,51 @@ export default class imageSqResizer {
                     console.warn('not image type');
                     return true;
                 }
-                this.resized(file, this.size);
+                this.resized(file, this._size);
             });
         });
     }
 
     //get blob object
-    getBlob() {
-        return this._blob;
-    }
-    //set blob object
-    setBlob(blob) {
-        this._blob = blob;
-    }
+    get blob() {return this._blob;}
+    //get dataUrl
+    get dataUrl() {return this._dataUrl;}
 
     // resize
     resized(file, maxWidth) {
-
+        let setDataUrlFunc = this._setDataUrlFunc || false;
         let reader = new FileReader();
         reader.onload = () => {
-
+            
             let tempImg = new Image();
             tempImg.src = reader.result;
 
+            let createCanvas = (width,height,img)=>{
+                let canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                let ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                this._dataUrl = canvas.toDataURL();
+                if(setDataUrlFunc){
+                    setDataUrlFunc( canvas.toDataURL());
+                }    
+                canvas.toBlob((blob) => {
+                    this._blob = blob;
+                });
+            }
+
             tempImg.onload = () => {
+
                 // calc size
                 let tempW = tempImg.width;
                 let tempH = tempImg.height;
-                let imageId = this.imageId || false;
                 let min = tempW >= tempH ? tempH : tempW;
                 maxWidth = maxWidth || min;
                 
                 if (tempH <= maxWidth && tempW <= maxWidth) {
-                    let canvas = document.createElement('canvas');
-                    canvas.width = tempW;
-                    canvas.height = tempH;
-                    let ctx = canvas.getContext('2d');
-                    ctx.drawImage(tempImg, 0, 0);
-                    document.getElementById(imageId).src = canvas.toDataURL();
+                    createCanvas(tempW,tempH,tempImg);
                 }
-
 
                 let startY = 0;
                 if (min !== tempH) {
@@ -78,24 +86,12 @@ export default class imageSqResizer {
                 if (min !== tempW) {
                     startX = Math.round(tempW / 2 - (min / 2));
                 }
-
-                let setBlob = this.setBlob;
-
+               
                 let finalImg = new Image();
                 finalImg.src = this.getImagePortion(tempImg, min, min, startX, startY, 1);
 
-                finalImg.onload = function () {
-                    let canvas = document.createElement('canvas');
-                    canvas.width = maxWidth;
-                    canvas.height = maxWidth;
-                    let ctx = canvas.getContext('2d');
-                    ctx.drawImage(this, 0, 0, maxWidth, maxWidth);
-                    if (imageId) {
-                        document.getElementById(imageId).src = canvas.toDataURL();
-                    }
-                    canvas.toBlob((blob) => {
-                        setBlob(blob);
-                    });
+                finalImg.onload = () => {
+                    createCanvas(maxWidth,maxWidth,finalImg);
                 }
             }
         }
