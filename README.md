@@ -21,7 +21,8 @@ let resizer1 = new imageSqResizer(
 let resizer2 = new imageSqResizer(
     'image-input',
     50,
-    (dataUrl) => document.getElementById('image-output').src = dataUrl;
+    (dataUrl) => 
+        document.getElementById('image-output').src = dataUrl;
 );
 
 let resizer3 = new imageSqResizer(
