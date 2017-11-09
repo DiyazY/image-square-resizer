@@ -1,7 +1,7 @@
 # image-square-resizer
 js-utility for crop and resize image
 
-[https://user-images.githubusercontent.com/16912141/32625724-183649a2-c59e-11e7-8845-9bc36125f56a.gif]
+![alt text](https://user-images.githubusercontent.com/16912141/32625724-183649a2-c59e-11e7-8845-9bc36125f56a.gif)
 
 ## imager square resizer  
 Steps:
