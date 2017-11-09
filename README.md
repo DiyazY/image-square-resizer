@@ -48,4 +48,4 @@ document.getElementById('image-output').src = resizer2.dataUrl;
 
 ## View Page
 
-![Url](https://diyazy.github.io/image-square-resizer/)
+[View Page](https://diyazy.github.io/image-square-resizer/)
