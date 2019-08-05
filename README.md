@@ -54,3 +54,7 @@ document.getElementById('image-output').src = resizer2.dataUrl;
 ## View Page
 
 [View Page](https://diyazy.github.io/image-square-resizer/)
+
+### License
+
+image-square-resizer is [MIT licensed](./LICENSE).
