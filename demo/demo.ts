@@ -17,9 +17,20 @@ const downloadBtn = document.getElementById('download-btn') as HTMLButtonElement
 let lastBlob: Blob | null = null;
 let lastFormat: OutputFormat = 'image/png';
 
+function updateQualityState() {
+  const isLossy = formatSelect.value !== 'image/png';
+  qualityInput.disabled = !isLossy;
+  qualityValue.textContent = isLossy
+    ? qualityInput.value
+    : 'n/a (PNG is lossless)';
+}
+
 qualityInput.addEventListener('input', () => {
   qualityValue.textContent = qualityInput.value;
 });
+
+formatSelect.addEventListener('change', updateQualityState);
+updateQualityState();
 
 async function processFile(file: File) {
   const size = parseInt(sizeInput.value, 10) || 300;

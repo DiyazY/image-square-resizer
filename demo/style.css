@@ -55,6 +55,15 @@ input[type="file"] {
   font-size: 0.9rem;
 }
 
+input[type="range"]:disabled {
+  opacity: 0.3;
+}
+
+#quality-value {
+  font-size: 0.8rem;
+  color: #888;
+}
+
 input[type="number"],
 select {
   background: #0f3460;
