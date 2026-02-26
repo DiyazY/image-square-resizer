@@ -27,6 +27,11 @@ async function processFile(file: File) {
   const quality = parseFloat(qualityInput.value);
   const anchor = anchorSelect.value as CropAnchor;
 
+  // Show loading state
+  reprocessBtn.disabled = true;
+  reprocessBtn.textContent = 'Processing...';
+  resultPreview.style.opacity = '0.4';
+
   // Show original
   originalPreview.src = URL.createObjectURL(file);
   preview.classList.remove('hidden');
@@ -34,10 +39,12 @@ async function processFile(file: File) {
   const result = await squareCropResize(file, { size, format, quality, anchor });
 
   resultPreview.src = result.dataUrl;
+  resultPreview.style.opacity = '1';
   lastBlob = result.blob;
   lastFormat = result.format;
   downloadBtn.disabled = false;
   reprocessBtn.disabled = false;
+  reprocessBtn.textContent = 'Re-process';
 
   const ext = format.split('/')[1];
   info.textContent = `${result.size}x${result.size} ${ext.toUpperCase()} — ${(result.blob.size / 1024).toFixed(1)} KB`;
@@ -51,15 +58,8 @@ function reprocess() {
 // Process on file select
 fileInput.addEventListener('change', reprocess);
 
-// Re-process button
+// Re-process button for applying changed options
 reprocessBtn.addEventListener('click', reprocess);
-
-// Also re-process live when options change
-for (const el of [formatSelect, anchorSelect]) {
-  el.addEventListener('change', reprocess);
-}
-sizeInput.addEventListener('input', reprocess);
-qualityInput.addEventListener('input', reprocess);
 
 downloadBtn.addEventListener('click', () => {
   if (!lastBlob) return;

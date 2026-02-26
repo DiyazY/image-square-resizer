@@ -91,6 +91,7 @@ select {
   border-radius: 4px;
   background: #16213e;
   display: block;
+  transition: opacity 0.15s;
 }
 
 .info {
