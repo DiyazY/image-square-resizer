@@ -80,8 +80,20 @@ function reprocess() {
   if (file) processFile(file);
 }
 
-// Process on file select
-fileInput.addEventListener('change', reprocess);
+const supportedFormats = ['image/png', 'image/jpeg', 'image/webp'];
+
+// Process on file select, preselecting the matching format
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files?.[0];
+  if (!file) return;
+
+  if (supportedFormats.includes(file.type)) {
+    formatSelect.value = file.type;
+    updateQualityState();
+  }
+
+  processFile(file);
+});
 
 // Re-process button for applying changed options
 reprocessBtn.addEventListener('click', reprocess);
