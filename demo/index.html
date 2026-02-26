@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>image-square-resizer demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>image-square-resizer</h1>
+    <p>Crop and resize images to squares. Select an image to see it in action.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="image-input">Choose image</label>
+        <input type="file" id="image-input" accept="image/*">
+      </div>
+      <div class="control-group">
+        <label for="size-input">Size (px)</label>
+        <input type="number" id="size-input" value="300" min="1" max="4096">
+      </div>
+      <div class="control-group">
+        <label for="format-select">Format</label>
+        <select id="format-select">
+          <option value="image/png">PNG</option>
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/webp">WebP</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="quality-input">Quality</label>
+        <input type="range" id="quality-input" min="0.1" max="1" step="0.05" value="0.92">
+        <span id="quality-value">0.92</span>
+      </div>
+      <div class="control-group">
+        <label for="anchor-select">Anchor</label>
+        <select id="anchor-select">
+          <option value="center">Center</option>
+          <option value="top">Top</option>
+          <option value="bottom">Bottom</option>
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+          <option value="top-left">Top-Left</option>
+          <option value="top-right">Top-Right</option>
+          <option value="bottom-left">Bottom-Left</option>
+          <option value="bottom-right">Bottom-Right</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="preview">
+      <div class="preview-panel">
+        <h3>Original</h3>
+        <img id="original-preview" alt="Original image">
+      </div>
+      <div class="preview-panel">
+        <h3>Result</h3>
+        <img id="result-preview" alt="Cropped result">
+      </div>
+    </div>
+
+    <div id="info" class="info"></div>
+
+    <div class="actions">
+      <button id="download-btn" disabled>Download result</button>
+    </div>
+  </div>
+  <script type="module" src="demo.ts"></script>
+</body>
+</html>
