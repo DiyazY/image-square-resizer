@@ -81,6 +81,10 @@ select {
   margin-bottom: 0.5rem;
 }
 
+.preview.hidden {
+  display: none;
+}
+
 .preview-panel img {
   max-width: 100%;
   max-height: 400px;
@@ -97,6 +101,8 @@ select {
 
 .actions {
   margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
 }
 
 button {
