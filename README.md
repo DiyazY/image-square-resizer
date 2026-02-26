@@ -1,60 +1,102 @@
 # image-square-resizer
-js-utility for crop and resize image
 
-## Build It Yourself/Run the Demos
-Build: `npm install && npm run build`
+Crop and resize images to squares. Zero dependencies, browser-native, Promise-based.
 
-Demos: `npm install && npm start`
+## Install
 
-![alt text](https://user-images.githubusercontent.com/16912141/32625724-183649a2-c59e-11e7-8845-9bc36125f56a.gif)
-
-## imager square resizer  
-Steps:
-
-* make it square (if width &gt; heigh, crop from left and right sides proportionally)
-* resize if width/height &gt; N px
-
-## Init
-
-```js
-import imageSqResizer from './image-square-resizer.js'
-
-let resizer1 = new imageSqResizer(
-    'image-input',
-    300,
-    null 
-);
-
-let resizer2 = new imageSqResizer(
-    'image-input',
-    50,
-    (dataUrl) => 
-        document.getElementById('image-output').src = dataUrl;
-);
-
-let resizer3 = new imageSqResizer(
-    'image-input',
-    50
-);
+```bash
+npm install image-square-resizer
 ```
 
-## Get blob
+## Usage
 
-```js
-let formData = new FormData();
-formData.append('files[0]', resizer1.blob);
+```ts
+import { squareCropResize } from 'image-square-resizer';
+
+const file = inputElement.files[0];
+const result = await squareCropResize(file, { size: 300 });
+
+// Use the result
+document.getElementById('preview').src = result.dataUrl;
+
+const formData = new FormData();
+formData.append('avatar', result.blob, 'avatar.png');
 ```
 
-## Get dataUrl
+### Options
 
-```js
-document.getElementById('image-output').src = resizer2.dataUrl;
+```ts
+await squareCropResize(file, {
+  size: 200,               // Target square size in px (default: shorter dimension)
+  format: 'image/webp',    // 'image/png' | 'image/jpeg' | 'image/webp' (default: 'image/png')
+  quality: 0.8,            // 0-1, for JPEG/WebP (default: 0.92)
+  anchor: 'top',           // Crop anchor point (default: 'center')
+});
 ```
 
-## View Page
+**Anchor points:** `center`, `top`, `bottom`, `left`, `right`, `top-left`, `top-right`, `bottom-left`, `bottom-right`
 
-[View Page](https://diyazy.github.io/image-square-resizer/)
+### Result
 
-### License
+```ts
+interface ResizeResult {
+  blob: Blob;          // Ready for FormData upload
+  dataUrl: string;     // Ready for img.src
+  size: number;        // Final square edge size
+  format: OutputFormat;
+}
+```
 
-image-square-resizer is [MIT licensed](./LICENSE).
+### Input types
+
+Accepts `File`, `Blob`, or `HTMLImageElement`:
+
+```ts
+// From file input
+await squareCropResize(file, { size: 300 });
+
+// From blob
+await squareCropResize(blob, { size: 300 });
+
+// From existing image element
+await squareCropResize(imgElement, { size: 300 });
+```
+
+### DOM file input binding (optional)
+
+```ts
+import { bindFileInput } from 'image-square-resizer';
+
+const cleanup = bindFileInput(document.getElementById('avatar-input'), {
+  size: 300,
+  format: 'image/jpeg',
+  quality: 0.85,
+  onResult: (result) => {
+    preview.src = result.dataUrl;
+  },
+  onError: (err) => console.error(err),
+});
+
+// Remove listener when done
+cleanup();
+```
+
+## How it works
+
+1. Crops the image to a square using the shorter dimension
+2. Resizes to the target size (never upscales)
+
+The crop anchor controls which part of the image is kept. For example, `top` keeps the top of a portrait photo, `center` (default) keeps the middle.
+
+## Development
+
+```bash
+npm install
+npm run dev      # Serve demo at localhost:5173
+npm test         # Run tests
+npm run build    # Build ESM + CJS + types to dist/
+```
+
+## License
+
+[MIT](./LICENSE)

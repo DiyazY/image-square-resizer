@@ -1,0 +1,7 @@
+source/
+demo/
+tests/
+*.config.ts
+tsconfig.json
+.git*
+_config.yml

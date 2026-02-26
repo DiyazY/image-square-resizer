@@ -1,41 +1,59 @@
 {
   "name": "image-square-resizer",
-  "version": "1.0.0",
-  "description": "js-utility for crop and resize image",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack-dev-server",
-    "build": "webpack"
+  "version": "2.0.0",
+  "description": "Crop and resize images to squares. Zero dependencies, browser-native, Promise-based.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
   },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "vite demo",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "image",
+    "resize",
+    "crop",
+    "square",
+    "avatar",
+    "thumbnail",
+    "canvas"
+  ],
+  "author": "Diyaz",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DiyazY/image-square-resizer.git"
   },
-  "keywords": [
-    "js",
-    "image",
-    "resize"
-  ],
-  "author": "Diyaz",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/DiyazY/image-square-resizer/issues"
   },
   "homepage": "https://github.com/DiyazY/image-square-resizer#readme",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "css-loader": "^0.28.7",
-    "html-webpack-plugin": "^2.29.0",
-    "pug": "^2.0.0-rc.2",
-    "pug-loader": "^2.3.0",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.5.1",
-    "webpack-preset": "^0.2.0",
-    "webpack-preset-babel": "^0.2.0",
-    "webpack-preset-babel-stage-3": "^0.2.0"
-  },
-  "dependencies": {
-    "style-loader": "^0.19.0"
+    "jsdom": "^28.1.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vite": "^6.0.0",
+    "vitest": "^2.0.0"
   }
 }
