@@ -10,7 +10,8 @@ const anchorSelect = document.getElementById('anchor-select') as HTMLSelectEleme
 const preview = document.getElementById('preview') as HTMLDivElement;
 const originalPreview = document.getElementById('original-preview') as HTMLImageElement;
 const resultPreview = document.getElementById('result-preview') as HTMLImageElement;
-const info = document.getElementById('info') as HTMLDivElement;
+const originalInfo = document.getElementById('original-info') as HTMLSpanElement;
+const resultInfo = document.getElementById('result-info') as HTMLSpanElement;
 const reprocessBtn = document.getElementById('reprocess-btn') as HTMLButtonElement;
 const downloadBtn = document.getElementById('download-btn') as HTMLButtonElement;
 
@@ -43,9 +44,21 @@ async function processFile(file: File) {
   reprocessBtn.textContent = 'Processing...';
   resultPreview.style.opacity = '0.4';
 
-  // Show original
-  originalPreview.src = URL.createObjectURL(file);
+  // Show original and wait for it to load so we can read its natural dimensions
+  const originalUrl = URL.createObjectURL(file);
+  originalPreview.src = originalUrl;
   preview.classList.remove('hidden');
+
+  await new Promise<void>((resolve) => {
+    originalPreview.onload = () => resolve();
+    // If already cached, onload may not fire
+    if (originalPreview.complete) resolve();
+  });
+
+  const origW = originalPreview.naturalWidth;
+  const origH = originalPreview.naturalHeight;
+  const fileSizeKB = (file.size / 1024).toFixed(1);
+  originalInfo.textContent = `${origW}x${origH} — ${fileSizeKB} KB`;
 
   const result = await squareCropResize(file, { size, format, quality, anchor });
 
@@ -58,7 +71,8 @@ async function processFile(file: File) {
   reprocessBtn.textContent = 'Re-process';
 
   const ext = format.split('/')[1];
-  info.textContent = `${result.size}x${result.size} ${ext.toUpperCase()} — ${(result.blob.size / 1024).toFixed(1)} KB`;
+  const resultSizeKB = (result.blob.size / 1024).toFixed(1);
+  resultInfo.textContent = `${result.size}x${result.size} ${ext.toUpperCase()} — ${resultSizeKB} KB`;
 }
 
 function reprocess() {
